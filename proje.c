@@ -46,11 +46,17 @@ int main (){
         //game'i ekrana yaz
         for (i=0; i<(m+2); i++){
             for (j=0; j<(n+2); j++){
+                //renkler
+                switch (game[i][j]){
+                    case '#': printf("\033[1;31m"); break; //duvarlar: kırmızı
+                    case '0': printf("\033[0;33m"); break; //yemekler: sarı
+                    default: printf("\033[0;36m");         //yılan:    camgöbeği
+                }
                 printf("%c ", game[i][j]);
             }
             printf("\n");
         }
-        printf("Yapılan hamle sayısı: %d\n", k);
+        printf("\033[0mYapılan hamle sayısı: %d\n", k);
         //hareket sistemi
         printf("Hamle (U/D/L/R): ");
         scanf(" %c", &input);
@@ -63,40 +69,46 @@ int main (){
             case 'd': case 'D': move[0] =  1; break;
             case 'l': case 'L': move[1] = -1; break;
             case 'r': case 'R': move[1] =  1; break;
-            default: printf("Hatalı girdi.\n"); continue;
+            default:
+                printf("Hatalı girdi.\n");
+                flag++;
         }
-        k++;
-        game[loc[len-1][0]][loc[len-1][1]] = ' ';
-        //önceki hamlede yemek yendiyse yılanı büyüt
-        if (eaten == 1){
-            eaten--;
-            len++;
-        }else {
-            game[loc[0][0]][loc[0][1]] = ' ';
-        }
-        for (i=len-1; i>0; i--){
-            loc[i][0] = loc[i-1][0];
-            loc[i][1] = loc[i-1][1];
-        }
-        loc[0][0] += move[0];
-        loc[0][1] += move[1];
-        //yemek kontrolü
-        if (game[loc[0][0]][loc[0][1]] == '0'){
-            eaten = 1;
-            food--;
-        }
-        //duvar kontrolü
-        if (game[loc[0][0]][loc[0][1]] == '#'){
-            printf("Duvara çarptınız.\n");
-            flag++;
-        //kendine çarpma kontrolü
-        }else if (game[loc[0][0]][loc[0][1]] > '0'){
-            printf("Yılanı kendine çarptırdınız.\n");
-            flag++;
-        }
-        //yılanın ilerlet
-        for (i=0; i<len; i++){
-            game[loc[i][0]][loc[i][1]] = '1'+i;
+        if (flag == 0){
+            k++;
+            game[loc[len-1][0]][loc[len-1][1]] = ' ';
+            //önceki hamlede yemek yendiyse yılanı büyüt
+            if (eaten == 1){
+                eaten--;
+                len++;
+            }else {
+                game[loc[0][0]][loc[0][1]] = ' ';
+            }
+            for (i=len-1; i>0; i--){
+                loc[i][0] = loc[i-1][0];
+                loc[i][1] = loc[i-1][1];
+            }
+            loc[0][0] += move[0];
+            loc[0][1] += move[1];
+            //yemek kontrolü
+            if (game[loc[0][0]][loc[0][1]] == '0'){
+                eaten = 1;
+                food--;
+            }
+            //duvar kontrolü
+            if (game[loc[0][0]][loc[0][1]] == '#'){
+                printf("Duvara çarptınız.\n");
+                flag--;
+            //kendine çarpma kontrolü
+            }else if (game[loc[0][0]][loc[0][1]] > '0'){
+                printf("Yılanı kendine çarptırdınız.\n");
+                flag--;
+            }
+            //yılanın ilerlet
+            for (i=0; i<len; i++){
+                game[loc[i][0]][loc[i][1]] = '1'+i;
+            }
+        }else{
+            flag = 0;
         }
     }
     if (food == 0){
