@@ -24,6 +24,11 @@ int main (){
     //yemek sayısını al
     printf("Yemek sayısını giriniz: ");
     scanf("%d", &food);
+    //yemekleri oluştururken sonsuz döngüyü engellemek için kontrol
+    while (food >= (m*n) || food < 0){
+        printf("Geçersiz girdi. Lütfen pozitif ve oyun alanına\nsığacak kadar yemek giriniz: ");
+        scanf(" %d", &food);
+    }
     int loc[food+1][2];
     //yılanı rastgele bir yere koy ve konumunu loc'a kaydet
     i = (rand()%m)+1;
@@ -52,7 +57,13 @@ int main (){
                     case '0': printf("\033[0;33m"); break; //yemekler: sarı
                     default: printf("\033[0;36m");         //yılan:    camgöbeği
                 }
-                printf("%c ", game[i][j]);
+                if (game[i][j] > 83){
+                    printf("%c ", game[i][j]-19);
+                }else if (game[i][j] > '9'){
+                    printf("%c ", game[i][j]+39);
+                }else {
+                    printf("%c ", game[i][j]);
+                }
             }
             printf("\n");
         }
@@ -60,6 +71,7 @@ int main (){
         //hareket sistemi
         printf("Hamle (U/D/L/R): ");
         scanf(" %c", &input);
+        printf("\n");
         //move'u temizle
         move[0] = 0;
         move[1] = 0;
